@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { LayoutsModule } from './layouts/layouts.module';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot(), // Lädt die .env Datei
     TypeOrmModule.forRoot({
