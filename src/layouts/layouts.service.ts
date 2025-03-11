@@ -37,8 +37,15 @@ export class LayoutService {
   }
     
   async remove(id: string): Promise<boolean> {
+    const layout = await this.layoutRepository.findOneBy({ id });
+
+    if (!layout) {
+        throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
+    }
+
     const result = await this.layoutRepository.delete(id);
     return (result.affected ?? 0) > 0;
   }
+
 
 }
