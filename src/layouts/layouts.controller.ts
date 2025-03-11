@@ -1,12 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { LayoutService } from './layouts.service';
+import { Layout } from './layout.entity';
 
 @Controller('layouts')
-export class LayoutsController {
+export class LayoutController {
+  constructor(private readonly layoutService: LayoutService) {}
+
   @Get()
-  getAllLayouts() {
-    return [
-      { id: 1, name: 'Layout 1', createdAt: new Date() },
-      { id: 2, name: 'Layout 2', createdAt: new Date() },
-    ];
+  async getAllLayouts(): Promise<Layout[]> {
+    return this.layoutService.findAll();
+  }
+
+  @Get(':id')
+  async getLayoutById(@Param('id') id: string): Promise<Layout> {
+    return this.layoutService.findOne(id);
+  }
+
+  @Post()
+  async createLayout(@Body() layoutData: Partial<Layout>): Promise<Layout> {
+    return this.layoutService.create(layoutData);
   }
 }
