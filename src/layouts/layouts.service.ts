@@ -36,5 +36,9 @@ export class LayoutService {
     return this.layoutRepository.save(layout);
   }
     
+  async remove(id: string): Promise<boolean> {
+    const result = await this.layoutRepository.delete(id);
+    return result.affected > 0;
+  }
 
 }
