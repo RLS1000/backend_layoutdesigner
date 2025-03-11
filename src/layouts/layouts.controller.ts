@@ -12,9 +12,10 @@ export class LayoutController {
   }
 
   @Get(':id')
-  async getLayoutById(@Param('id') id: string): Promise<Layout> {
+async findOne(@Param('id') id: string): Promise<Layout | null> { // 🛠 Fix: "null" als möglichen Rückgabewert erlauben
     return this.layoutService.findOne(id);
-  }
+}
+
 
   @Post()
   async createLayout(@Body() layoutData: Partial<Layout>): Promise<Layout> {
