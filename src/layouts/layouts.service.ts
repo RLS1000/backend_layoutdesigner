@@ -14,8 +14,8 @@ export class LayoutService {
     return this.layoutRepository.find();
   }
 
-  async findOne(id: string): Promise<Layout> {
-    return this.layoutRepository.findOneBy({ id });
+  async findOne(id: string): Promise<Layout | null> { // ✅ "null" als möglichen Rückgabewert hinzufügen
+    return this.layoutRepository.findOneBy({ id }) || null;
   }
 
   async create(layoutData: Partial<Layout>): Promise<Layout> {
