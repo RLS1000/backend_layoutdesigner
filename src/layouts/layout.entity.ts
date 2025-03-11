@@ -1,28 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Layout {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ unique: true })
-  orderId: string;
+    @Column({ nullable: false })
+    orderId: string;
 
-  @Column({ nullable: true })
-  customerEmail: string;
+    @Column({ nullable: true })
+    customerEmail: string;
 
-  @Column({ type: 'jsonb' })
-  layoutData: object;
+    @Column({ type: 'jsonb', nullable: true })
+    layoutData: object;
 
-  @CreateDateColumn()
-  createdAt: Date;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
-  exportedAt: Date;
+    @Column({ type: 'timestamp', nullable: true })
+    exportedAt: Date;
 
-  @Column({ unique: true })
-  deepLink: string;
+    @Column({ nullable: true })
+    deepLink: string;
 }
