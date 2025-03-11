@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Layout } from './layout.entity';
+import { UpdateLayoutDto } from './dto/update-layout.dto';
 
 @Injectable()
 export class LayoutService {
@@ -24,8 +25,15 @@ export class LayoutService {
   }
 
   async update(id: string, updateLayoutDto: UpdateLayoutDto): Promise<Layout> {
-    await this.layoutRepository.update(id, updateLayoutDto);
-    return this.layoutRepository.findOneBy({ id });
-  }  
+    const layout = await this.layoutRepository.findOneBy({ id });
+  
+    if (!layout) {
+      throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
+    }
+  
+    Object.assign(layout, updateLayoutDto);
+    return this.layoutRepository.save(layout);
+  }
+    
 
 }
