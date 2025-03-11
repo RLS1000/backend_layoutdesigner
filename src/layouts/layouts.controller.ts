@@ -26,4 +26,11 @@ export class LayoutController {
   async createLayout(@Body() layoutData: Partial<Layout>): Promise<Layout> {
     return this.layoutService.create(layoutData);
   }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.layoutService.remove(id); // Wird NotFoundException werfen, falls nötig
+    return { message: 'Layout erfolgreich gelöscht' };
+  }
+
 }
