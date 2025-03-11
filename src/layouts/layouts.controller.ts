@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, NotFoundException } from '@nestjs/common';
 import { LayoutService } from './layouts.service';
 import { Layout } from './layout.entity';
 import { UpdateLayoutDto } from './dto/update-layout.dto';
