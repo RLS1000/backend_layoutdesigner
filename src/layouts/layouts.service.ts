@@ -22,4 +22,10 @@ export class LayoutService {
     const newLayout = this.layoutRepository.create(layoutData);
     return this.layoutRepository.save(newLayout);
   }
+
+  async update(id: string, updateLayoutDto: UpdateLayoutDto): Promise<Layout> {
+    await this.layoutRepository.update(id, updateLayoutDto);
+    return this.layoutRepository.findOneBy({ id });
+  }  
+
 }

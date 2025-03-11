@@ -12,10 +12,14 @@ export class LayoutController {
   }
 
   @Get(':id')
-async findOne(@Param('id') id: string): Promise<Layout | null> { // 🛠 Fix: "null" als möglichen Rückgabewert erlauben
+  async findOne(@Param('id') id: string): Promise<Layout | null> { // 🛠 Fix: "null" als möglichen Rückgabewert erlauben
     return this.layoutService.findOne(id);
-}
+  }
 
+  @Put(':id')
+  updateLayout(@Param('id') id: string, @Body() updateLayoutDto: UpdateLayoutDto) {
+  return this.layoutService.update(id, updateLayoutDto);
+  }
 
   @Post()
   async createLayout(@Body() layoutData: Partial<Layout>): Promise<Layout> {
