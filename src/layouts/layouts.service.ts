@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Layout } from './layout.entity';
 import { UpdateLayoutDto } from './dto/update-layout.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class LayoutService {
