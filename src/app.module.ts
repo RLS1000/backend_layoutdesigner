@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot(), // Lädt die .env Datei
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL, // Lädt die Datenbank-URL aus der .env Datei
+      autoLoadEntities: true,
+      synchronize: true, // Nur in Entwicklung verwenden!
+    }),
+  ],
 })
 export class AppModule {}
