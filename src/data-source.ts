@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm';
-import { Layout } from './layouts/layout.entity'; // Muss mit dem Dateinamen übereinstimmen
+import 'dotenv/config'; // ✅ Lädt die .env-Datei
 
 export const AppDataSource = new DataSource({
-    type: 'postgres',
-    url: process.env.DATABASE_URL, // Von Railway laden
-    entities: [Layout], // Alle Entities hier einfügen
-    synchronize: false, // Muss auf "false" sein, wenn du Migrationen nutzt
-    migrations: ['src/migrations/*.ts'],
+  type: 'postgres',
+  url: process.env.DATABASE_URL, // ✅ Holt die Datenbank-URL aus der Umgebung
+  entities: ['dist/**/*.entity.js'],
+  migrations: ['dist/migrations/*.js'],
+  synchronize: false, // ⚠️ Migrations statt Sync
 });
