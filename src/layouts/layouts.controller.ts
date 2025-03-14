@@ -1,11 +1,15 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, NotFoundException, BadRequestException } from '@nestjs/common';
 import { LayoutService } from './layouts.service';
 import { Layout } from './layout.entity';
 import { UpdateLayoutDto } from './dto/update-layout.dto';
+import { DeepLinkService } from '../services/deeplink.service'; // Service für Deeplink-Generierung
 
 @Controller('layouts')
 export class LayoutController {
-  constructor(private readonly layoutService: LayoutService) {}
+  constructor(
+    private readonly layoutService: LayoutService,
+    private readonly deepLinkService: DeepLinkService, // Deeplink Service injizieren
+  ) {}
 
   @Get()
   async getAllLayouts(): Promise<Layout[]> {
@@ -13,13 +17,15 @@ export class LayoutController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Layout | null> { // 🛠 Fix: "null" als möglichen Rückgabewert erlauben
-    return this.layoutService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<Layout | null> {
+    const layout = await this.layoutService.findOne(id);
+    if (!layout) throw new NotFoundException('Layout nicht gefunden.');
+    return layout;
   }
 
   @Put(':id')
-  updateLayout(@Param('id') id: string, @Body() updateLayoutDto: UpdateLayoutDto) {
-  return this.layoutService.update(id, updateLayoutDto);
+  async updateLayout(@Param('id') id: string, @Body() updateLayoutDto: UpdateLayoutDto): Promise<Layout> {
+    return this.layoutService.update(id, updateLayoutDto);
   }
 
   @Post()
@@ -29,8 +35,35 @@ export class LayoutController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    await this.layoutService.remove(id); // Wird NotFoundException werfen, falls nötig
+    const layout = await this.layoutService.findOne(id);
+    if (!layout) throw new NotFoundException('Layout nicht gefunden.');
+    
+    await this.layoutService.remove(id);
     return { message: 'Layout erfolgreich gelöscht' };
   }
 
+  /**
+   * 📌 **Erstellt einen Deeplink für ein neues Layout**
+   * Endpoint: `POST /layouts/generate-deeplink`
+   */
+  @Post('generate-deeplink')
+  async generateDeepLink(@Body() data: { customerEmail: string; customerFirstName: string; customerLastName: string; eventDate: string }) {
+    if (!data.customerEmail || !data.customerFirstName || !data.customerLastName || !data.eventDate) {
+      throw new BadRequestException('Alle Felder sind erforderlich (customerEmail, customerFirstName, customerLastName, eventDate)');
+    }
+
+    const newLayout = await this.layoutService.create({
+      customerEmail: data.customerEmail,
+      customerFirstName: data.customerFirstName,
+      customerLastName: data.customerLastName,
+      eventDate: new Date(data.eventDate),
+    });
+
+    const deepLink = this.deepLinkService.generateDeepLink(newLayout.id); // Deeplink generieren
+    newLayout.deepLink = deepLink;
+
+    await this.layoutService.update(newLayout.id, newLayout); // Speichern in DB
+
+    return { message: 'Deeplink erstellt', deepLink };
+  }
 }

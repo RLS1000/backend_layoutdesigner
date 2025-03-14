@@ -29,15 +29,18 @@ export class Layout {
     @Column({ type: 'jsonb', nullable: true })
     uploadedImages: object; // Speichert die URLs der hochgeladenen Bilder
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn({ type: 'timestamp' })
     createdAt: Date;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @UpdateDateColumn({ type: 'timestamp' })
     updatedAt: Date;
 
     @Column({ type: 'timestamp', nullable: true })
     exportedAt: Date;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, unique: true })
     deepLink: string;
+
+    @Column({ default: false })
+    isFinal: boolean; // Speichert, ob das Layout endgültig gespeichert wurde
 }
