@@ -22,8 +22,10 @@ export class LayoutService {
   async create(layoutData: Partial<Layout>): Promise<Layout> {
     console.log("🔹 Empfangene Daten beim Erstellen:", layoutData);
 
-    // Falls `layoutData`, `originalLayoutData` oder `uploadedImages` als String kommen, parse sie als JSON
-    this.convertJsonFields(layoutData);
+    const convertedData = { ...updateLayoutDto } as Partial<Layout>;
+    this.convertJsonFields(convertedData);
+    Object.assign(layout, convertedData);
+
 
     const newLayout = this.layoutRepository.create(layoutData);
     return this.layoutRepository.save(newLayout);
