@@ -17,8 +17,8 @@ export class Layout {
     @Column({ nullable: true })
     customerLastName: string;
 
-    @Column({ type: 'date', nullable: true })
-    eventDate: Date;
+    @Column({ type: 'text', nullable: true }) // War vorher: { type: 'date' }
+    eventDate: string;
 
     @Column({ type: 'jsonb', nullable: true })
     layoutData: object;

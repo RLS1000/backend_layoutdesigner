@@ -1,32 +1,35 @@
-import { IsOptional, IsString, IsJSON } from 'class-validator';
+import { IsOptional, IsString, IsEmail, IsDateString, IsJSON } from 'class-validator';
 
 export class CreateLayoutDto {
-    @IsOptional()
-    @IsString()
-    orderId?: string;
+  @IsOptional()
+  @IsString()
+  orderId?: string;
 
-    @IsOptional()
-    @IsString()
-    customerEmail?: string;
+  @IsOptional()
+  @IsEmail()
+  customerEmail?: string;
 
-    @IsOptional()
-    @IsString()
-    customerFirstName?: string;
+  @IsOptional()
+  @IsString()
+  customerFirstName?: string;
 
-    @IsOptional()
-    @IsString()
-    customerLastName?: string;
+  @IsOptional()
+  @IsString()
+  customerLastName?: string;
 
-    @IsOptional()
-    @IsString()
-    eventDate?: string;  // Falls du Date-Objekte erwartest, passe dies entsprechend an
+  @IsOptional()
+  @IsDateString()
+  eventDate?: string;
 
-    @IsOptional()
-    layoutData?: object | string;
+  @IsOptional()
+  @IsJSON()
+  layoutData?: object;
 
-    @IsOptional()
-    originalLayoutData?: object | string;
+  @IsOptional()
+  @IsJSON()
+  originalLayoutData?: object;
 
-    @IsOptional()
-    uploadedImages?: object | string;
+  @IsOptional()
+  @IsJSON()
+  uploadedImages?: object;
 }

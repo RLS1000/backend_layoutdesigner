@@ -3,12 +3,14 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Layout } from './layout.entity';
 import { UpdateLayoutDto } from './dto/update-layout.dto';
+import { DeepLinkService } from '../services/deeplink.service';
 
 @Injectable()
 export class LayoutService {
   constructor(
     @InjectRepository(Layout)
     private readonly layoutRepository: Repository<Layout>,
+    private readonly deepLinkService: DeepLinkService
   ) {}
 
   async findAll(): Promise<Layout[]> {
@@ -22,10 +24,12 @@ export class LayoutService {
   async create(layoutData: Partial<Layout>): Promise<Layout> {
     console.log("🔹 Empfangene Daten beim Erstellen:", layoutData);
 
-    const convertedData = { ...updateLayoutDto } as Partial<Layout>;
-    this.convertJsonFields(convertedData);
-    Object.assign(layout, convertedData);
+    // JSON-Felder umwandeln
+    this.convertJsonFields(layoutData);
 
+    // Deeplink generieren
+    const deepLink = this.deepLinkService.generateDeepLink();
+    layoutData.deepLink = deepLink;
 
     const newLayout = this.layoutRepository.create(layoutData);
     return this.layoutRepository.save(newLayout);
@@ -35,23 +39,19 @@ export class LayoutService {
     console.log("🔹 Update für Layout ID:", id, "Daten:", updateLayoutDto);
 
     const layout = await this.layoutRepository.findOneBy({ id });
-
     if (!layout) {
       throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
     }
 
-    // Falls `layoutData`, `originalLayoutData` oder `uploadedImages` als String kommen, parse sie als JSON
-    const convertedData = { ...updateLayoutDto } as Partial<Layout>;
-    this.convertJsonFields(convertedData);
-    Object.assign(layout, convertedData);
-
+    // JSON-Felder umwandeln
+    this.convertJsonFields(updateLayoutDto);
+    
     Object.assign(layout, updateLayoutDto);
     return this.layoutRepository.save(layout);
   }
 
   async remove(id: string): Promise<boolean> {
     const layout = await this.layoutRepository.findOneBy({ id });
-
     if (!layout) {
       throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
     }
@@ -75,7 +75,7 @@ export class LayoutService {
         data.uploadedImages = JSON.parse(data.uploadedImages);
       }
     } catch (error) {
-      throw new BadRequestException('Ungültiges JSON-Format in `layoutData`, `originalLayoutData` oder `uploadedImages`');
+      throw new BadRequestException('Ungültiges JSON-Format in layoutData, originalLayoutData oder uploadedImages');
     }
   }
 }

@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DeepLinkService {
-  private readonly baseUrl: string = 'https://frontendlayoutdesigner-production.up.railway.app/'; // 🔹 Ersetze mit deiner echten Domain!
+  private baseUrl = 'https://yourdomain.com/layouts'; // Hier deine Domain eintragen
 
-  /**
-   * 🔗 **Generiert einen Deeplink für ein Layout**
-   * Beispiel: `https://frontend.example.com/layout/123e4567-e89b-12d3-a456-426614174000`
-   */
-  generateDeepLink(layoutId: string): string {
-    return `${this.baseUrl}/layout/${layoutId}`;
+  generateDeepLink(): string {
+    const uniqueId = uuidv4();
+    return `${this.baseUrl}/${uniqueId}`;
   }
 }
