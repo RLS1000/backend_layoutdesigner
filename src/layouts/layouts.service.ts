@@ -18,14 +18,38 @@ export class LayoutService {
   }
 
   async findOne(id: string): Promise<Layout | null> {
-    return this.layoutRepository.findOneBy({ id }) || null;
-  }
+    const layout = await this.layoutRepository.findOneBy({ id });
+
+    if (!layout) return null;
+
+    // Falls kein gespeichertes `layoutData` existiert, Standardwerte setzen
+    if (!layout.layoutData) {
+        layout.layoutData = {
+            name1: layout.name1,
+            name2: layout.name2,
+            name3: layout.name3 || "",
+            eventDate: layout.eventDate
+        };
+    }
+
+    return layout;
+}
 
   async create(layoutData: Partial<Layout>): Promise<Layout> {
     console.log("🔹 Empfangene Daten beim Erstellen:", layoutData);
 
     // JSON-Felder umwandeln
     this.convertJsonFields(layoutData);
+
+    // Falls noch kein `layoutData` existiert, mit Standardwerten initialisieren
+    if (!layoutData.layoutData) {
+        layoutData.layoutData = {
+            name1: layoutData.name1,
+            name2: layoutData.name2,
+            name3: layoutData.name3 || "", // Falls nicht gesetzt, leere Zeichenkette
+            eventDate: layoutData.eventDate
+        };
+    }
 
     // Layout erstellen und speichern
     const newLayout = this.layoutRepository.create(layoutData);
@@ -41,15 +65,21 @@ export class LayoutService {
 
     const layout = await this.layoutRepository.findOneBy({ id });
     if (!layout) {
-      throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
+        throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
     }
 
     // JSON-Felder umwandeln
     this.convertJsonFields(updateLayoutDto);
-    
+
+    // Nur `layoutData` überschreiben, wenn es wirklich mitgegeben wurde
+    if (updateLayoutDto.layoutData) {
+        layout.layoutData = updateLayoutDto.layoutData;
+    }
+
     Object.assign(layout, updateLayoutDto);
     return this.layoutRepository.save(layout);
   }
+
 
   async remove(id: string): Promise<boolean> {
     const layout = await this.layoutRepository.findOneBy({ id });

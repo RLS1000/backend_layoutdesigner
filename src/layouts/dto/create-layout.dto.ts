@@ -17,19 +17,28 @@ export class CreateLayoutDto {
   @IsString()
   customerLastName?: string;
 
-  @IsOptional()
-  @IsDateString()
-  eventDate?: string;
+  @IsString() // ❗ Name1 ist **Pflicht**, weil das Layout ihn braucht
+  name1: string;
+
+  @IsString() // ❗ Name2 ist **Pflicht**, weil das Layout ihn braucht
+  name2: string;
 
   @IsOptional()
-  @IsJSON()
+  @IsString() // ✅ Name3 ist optional (ersetzt Name1 + Name2 falls vorhanden)
+  name3?: string;
+
+  @IsDateString() // ❗ EventDate ist **Pflicht**, weil das Layout ihn braucht
+  eventDate: string;
+
+  @IsOptional()
+  @IsJSON() // 🛑 Hier bleibt `layoutData` erstmal leer (wird erst später gespeichert)
   layoutData?: object;
 
   @IsOptional()
-  @IsJSON()
+  @IsJSON() // ✅ Original-Layout bleibt gespeichert (falls Reset nötig ist)
   originalLayoutData?: object;
 
   @IsOptional()
-  @IsJSON()
+  @IsJSON() // ✅ Falls der Kunde eigene Bilder hochlädt
   uploadedImages?: object;
 }
