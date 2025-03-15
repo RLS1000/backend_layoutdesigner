@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class DeepLinkService {
-  private baseUrl = 'https://yourdomain.com/layouts'; // Hier deine Domain eintragen
-
-  generateDeepLink(): string {
-    const uniqueId = uuidv4();
-    return `${this.baseUrl}/${uniqueId}`;
+  generateDeepLink(layoutId: string): string {
+    return `https://your-frontend-domain/layout/${layoutId}`;
   }
 }

@@ -10,7 +10,7 @@ export class LayoutService {
   constructor(
     @InjectRepository(Layout)
     private readonly layoutRepository: Repository<Layout>,
-    private readonly deepLinkService: DeepLinkService
+    private readonly deepLinkService: DeepLinkService // ✅ Injectiert
   ) {}
 
   async findAll(): Promise<Layout[]> {
@@ -27,11 +27,12 @@ export class LayoutService {
     // JSON-Felder umwandeln
     this.convertJsonFields(layoutData);
 
-    // Deeplink generieren
-    const deepLink = this.deepLinkService.generateDeepLink();
-    layoutData.deepLink = deepLink;
-
+    // Layout erstellen und speichern
     const newLayout = this.layoutRepository.create(layoutData);
+    await this.layoutRepository.save(newLayout);
+
+    // Deeplink generieren & speichern
+    newLayout.deepLink = this.deepLinkService.generateDeepLink(newLayout.id);
     return this.layoutRepository.save(newLayout);
   }
 
