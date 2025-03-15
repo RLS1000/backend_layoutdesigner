@@ -22,14 +22,11 @@ export class CreateLayoutDto {
     eventDate?: string;  // Falls du Date-Objekte erwartest, passe dies entsprechend an
 
     @IsOptional()
-    @IsJSON()
     layoutData?: object | string;
 
     @IsOptional()
-    @IsJSON()
     originalLayoutData?: object | string;
 
     @IsOptional()
-    @IsJSON()
     uploadedImages?: object | string;
 }

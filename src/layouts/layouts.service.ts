@@ -41,7 +41,9 @@ export class LayoutService {
     }
 
     // Falls `layoutData`, `originalLayoutData` oder `uploadedImages` als String kommen, parse sie als JSON
-    this.convertJsonFields(updateLayoutDto);
+    const convertedData = { ...updateLayoutDto } as Partial<Layout>;
+    this.convertJsonFields(convertedData);
+    Object.assign(layout, convertedData);
 
     Object.assign(layout, updateLayoutDto);
     return this.layoutRepository.save(layout);

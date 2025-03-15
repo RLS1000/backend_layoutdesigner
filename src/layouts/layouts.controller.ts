@@ -62,7 +62,14 @@ export class LayoutController {
     const deepLink = this.deepLinkService.generateDeepLink(newLayout.id); // Deeplink generieren
     newLayout.deepLink = deepLink;
 
-    await this.layoutService.update(newLayout.id, { ...newLayout } as UpdateLayoutDto);
+    const updateDto: UpdateLayoutDto = {
+      ...newLayout,
+      layoutData: typeof newLayout.layoutData === 'string' ? JSON.parse(newLayout.layoutData) : newLayout.layoutData,
+      originalLayoutData: typeof newLayout.originalLayoutData === 'string' ? JSON.parse(newLayout.originalLayoutData) : newLayout.originalLayoutData,
+      uploadedImages: typeof newLayout.uploadedImages === 'string' ? JSON.parse(newLayout.uploadedImages) : newLayout.uploadedImages
+     };
+      await this.layoutService.update(newLayout.id, updateDto);
+  
 
     return { message: 'Deeplink erstellt', deepLink };
   }
