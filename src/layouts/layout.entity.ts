@@ -17,8 +17,17 @@ export class Layout {
     @Column({ nullable: true })
     customerLastName: string;
 
-    @Column({ type: 'text', nullable: true }) // War vorher: { type: 'date' }
+    @Column({ type: 'text', nullable: false }) // War vorher: { type: 'date' } - Pflichtfeld
     eventDate: string;
+
+    @Column({ nullable: false, default: "Unbekannt"}) // Name1 ist verpflichtend
+    name1: string;
+
+    @Column({ nullable: false, default: "Unbekannt"}) // Name2 ist verpflichtend
+    name2: string;
+
+    @Column({ nullable: true }) // Name3 ist optional (z. B. für Firmenevents oder Geburtstage)
+    name3?: string;
 
     @Column({ type: 'jsonb', nullable: true })
     layoutData: object;
