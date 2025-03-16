@@ -43,15 +43,10 @@ export class LayoutService {
 
     // Falls noch kein `layoutData` existiert, mit Standardwerten initialisieren
     if (!layoutData.layoutData) {
-        layoutData.layoutData = {
-            name1: layoutData.name1,
-            name2: layoutData.name2,
-            name3: layoutData.name3 || "", // Falls nicht gesetzt, leere Zeichenkette
-            eventDate: layoutData.eventDate
-        };
-    }
-
-    // Layout erstellen und speichern
+      layoutData.layoutData = {}; // Statt automatisch Werte zu setzen, bleibt es leer
+  }
+  
+  // Layout erstellen und speichern
     const newLayout = this.layoutRepository.create(layoutData);
     await this.layoutRepository.save(newLayout);
 
