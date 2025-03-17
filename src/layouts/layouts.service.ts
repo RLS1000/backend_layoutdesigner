@@ -35,45 +35,44 @@ export class LayoutService {
     return layout;
 }
 
-  async create(layoutData: Partial<Layout>): Promise<Layout> {
-    console.log("🔹 Empfangene Daten beim Erstellen:", layoutData);
+async create(layoutData: Partial<Layout>): Promise<Layout> {
+  console.log("🔹 Empfangene Daten beim Erstellen:", layoutData);
 
-    // JSON-Felder umwandeln
-    this.convertJsonFields(layoutData);
+  // JSON-Felder umwandeln
+  this.convertJsonFields(layoutData);
 
-    // Falls noch kein `layoutData` existiert, mit Standardwerten initialisieren
-    if (!layoutData.layoutData) {
-      layoutData.layoutData = {}; // Statt automatisch Werte zu setzen, bleibt es leer
-  }
-  
+  // ❌ Entferne layoutData, damit es beim Erstellen nicht gespeichert wird
+  delete layoutData.layoutData;
+
   // Layout erstellen und speichern
-    const newLayout = this.layoutRepository.create(layoutData);
-    await this.layoutRepository.save(newLayout);
+  const newLayout = this.layoutRepository.create(layoutData);
+  await this.layoutRepository.save(newLayout);
 
-    // Deeplink generieren & speichern
-    newLayout.deepLink = this.deepLinkService.generateDeepLink(newLayout.id);
-    return this.layoutRepository.save(newLayout);
+  // Deeplink generieren & speichern
+  newLayout.deepLink = this.deepLinkService.generateDeepLink(newLayout.id);
+  return this.layoutRepository.save(newLayout);
+}
+
+async update(id: string, updateLayoutDto: UpdateLayoutDto): Promise<Layout> {
+  console.log("🔹 Update für Layout ID:", id, "Daten:", updateLayoutDto);
+
+  const layout = await this.layoutRepository.findOneBy({ id });
+  if (!layout) {
+      throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
   }
 
-  async update(id: string, updateLayoutDto: UpdateLayoutDto): Promise<Layout> {
-    console.log("🔹 Update für Layout ID:", id, "Daten:", updateLayoutDto);
+  // JSON-Felder umwandeln
+  this.convertJsonFields(updateLayoutDto);
 
-    const layout = await this.layoutRepository.findOneBy({ id });
-    if (!layout) {
-        throw new NotFoundException(`Layout mit ID ${id} nicht gefunden`);
-    }
-
-    // JSON-Felder umwandeln
-    this.convertJsonFields(updateLayoutDto);
-
-    // Nur `layoutData` überschreiben, wenn es wirklich mitgegeben wurde
-    if (updateLayoutDto.layoutData) {
-        layout.layoutData = updateLayoutDto.layoutData;
-    }
-
-    Object.assign(layout, updateLayoutDto);
-    return this.layoutRepository.save(layout);
+  // ✅ layoutData wird jetzt erst beim Update gespeichert
+  if (updateLayoutDto.layoutData) {
+      layout.layoutData = updateLayoutDto.layoutData;
   }
+
+  Object.assign(layout, updateLayoutDto);
+  return this.layoutRepository.save(layout);
+}
+
 
 
   async remove(id: string): Promise<boolean> {
