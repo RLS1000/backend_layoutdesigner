@@ -22,16 +22,6 @@ export class LayoutService {
 
     if (!layout) return null;
 
-    // Falls kein gespeichertes `layoutData` existiert, Standardwerte setzen
-    if (!layout.layoutData) {
-        layout.layoutData = {
-            name1: layout.name1,
-            name2: layout.name2,
-            name3: layout.name3 || "",
-            eventDate: layout.eventDate
-        };
-    }
-
     return layout;
 }
 
