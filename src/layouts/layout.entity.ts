@@ -52,4 +52,9 @@ export class Layout {
 
     @Column({ default: false })
     isFinal: boolean; // Speichert, ob das Layout endgültig gespeichert wurde
+
+    @IsOptional()
+    @Column({ nullable: true })
+    selectedLayout?: string;
+
 }
