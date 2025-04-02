@@ -41,4 +41,9 @@ export class CreateLayoutDto {
   @IsOptional()
   @IsJSON() // ✅ Falls der Kunde eigene Bilder hochlädt
   uploadedImages?: object;
+
+  @IsOptional()
+  @IsString()
+  selectedLayout?: string;
+
 }
