@@ -18,4 +18,9 @@ export class UpdateLayoutDto extends PartialType(CreateLayoutDto) {
   @IsOptional()
   @IsJSON()
   uploadedImages?: object;
+
+  @IsOptional()
+  @IsString()
+  selectedLayout?: string;
+
 }
